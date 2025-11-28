@@ -1,0 +1,9 @@
+{
+  "name": "OmniTool AI Suite",
+  "description": "A comprehensive suite of 15+ utility and AI-powered tools including Image Generation, Video Creation (Veo), Real-time Voice (Gemini Live), and various calculators and converters.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

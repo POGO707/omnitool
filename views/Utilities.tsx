@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { QrCode, FileText, Link as LinkIcon, Download, Sliders, Image as ImageIcon, Upload, Minimize2, Maximize2, Check } from 'lucide-react';
+import { QrCode, FileText, Link as LinkIcon, Download, Sliders, Image as ImageIcon, Upload, Minimize2, Maximize2, Check, KeyRound, Copy, RefreshCw } from 'lucide-react';
 
 export default function Utilities() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,6 +19,7 @@ export default function Utilities() {
             {id: 'pdf', label: 'PDF Tools', icon: FileText},
             {id: 'compare', label: 'Img Compare', icon: Sliders},
             {id: 'imgtools', label: 'Resizer & Compress', icon: ImageIcon},
+            {id: 'password', label: 'Password Gen', icon: KeyRound},
         ].map((t) => (
             <button 
                 key={t.id}
@@ -37,6 +38,7 @@ export default function Utilities() {
         {activeTool === 'pdf' && <PdfTools />}
         {activeTool === 'compare' && <ImageComparison />}
         {activeTool === 'imgtools' && <ImageTools />}
+        {activeTool === 'password' && <PasswordGenerator />}
       </div>
     </div>
   );
@@ -361,6 +363,114 @@ function ImageTools() {
                      </button>
                  </div>
              </div>
+        </div>
+    )
+}
+
+function PasswordGenerator() {
+    const [password, setPassword] = useState('');
+    const [length, setLength] = useState(16);
+    const [copied, setCopied] = useState(false);
+    const [options, setOptions] = useState({
+        uppercase: true,
+        lowercase: true,
+        numbers: true,
+        symbols: true
+    });
+
+    const generate = () => {
+        const chars = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+        
+        let charSet = '';
+        if (options.uppercase) charSet += chars.uppercase;
+        if (options.lowercase) charSet += chars.lowercase;
+        if (options.numbers) charSet += chars.numbers;
+        if (options.symbols) charSet += chars.symbols;
+        
+        if (charSet === '') return;
+
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += charSet.charAt(Math.floor(Math.random() * charSet.length));
+        }
+        setPassword(result);
+        setCopied(false);
+    };
+
+    useEffect(() => {
+        generate();
+    }, [length, options]);
+
+    const copy = () => {
+        navigator.clipboard.writeText(password);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    return (
+        <div className="max-w-xl mx-auto py-4">
+            <h3 className="font-bold text-lg mb-6 text-center">Secure Password Generator</h3>
+            
+            <div className="bg-slate-900 rounded-xl p-6 mb-6 relative group">
+                <div className="font-mono text-2xl md:text-3xl text-center text-white break-all tracking-wider">
+                    {password}
+                </div>
+                <button 
+                    onClick={copy}
+                    className="absolute top-2 right-2 p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    title="Copy to clipboard"
+                >
+                    {copied ? <Check size={20} className="text-green-400"/> : <Copy size={20}/>}
+                </button>
+            </div>
+
+            <div className="space-y-6 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                <div>
+                    <div className="flex justify-between mb-2">
+                        <label className="font-semibold text-slate-700">Password Length</label>
+                        <span className="bg-white border px-2 py-0.5 rounded text-sm font-mono">{length}</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        min="6" 
+                        max="32" 
+                        value={length} 
+                        onChange={e => setLength(parseInt(e.target.value))}
+                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                    />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <label className="flex items-center gap-3 p-3 bg-white border rounded-lg cursor-pointer hover:border-teal-400 transition-colors">
+                        <input type="checkbox" checked={options.uppercase} onChange={e => setOptions({...options, uppercase: e.target.checked})} className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"/>
+                        <span className="text-sm font-medium">Uppercase</span>
+                    </label>
+                    <label className="flex items-center gap-3 p-3 bg-white border rounded-lg cursor-pointer hover:border-teal-400 transition-colors">
+                        <input type="checkbox" checked={options.lowercase} onChange={e => setOptions({...options, lowercase: e.target.checked})} className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"/>
+                        <span className="text-sm font-medium">Lowercase</span>
+                    </label>
+                    <label className="flex items-center gap-3 p-3 bg-white border rounded-lg cursor-pointer hover:border-teal-400 transition-colors">
+                        <input type="checkbox" checked={options.numbers} onChange={e => setOptions({...options, numbers: e.target.checked})} className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"/>
+                        <span className="text-sm font-medium">Numbers</span>
+                    </label>
+                    <label className="flex items-center gap-3 p-3 bg-white border rounded-lg cursor-pointer hover:border-teal-400 transition-colors">
+                        <input type="checkbox" checked={options.symbols} onChange={e => setOptions({...options, symbols: e.target.checked})} className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"/>
+                        <span className="text-sm font-medium">Symbols</span>
+                    </label>
+                </div>
+
+                <button 
+                    onClick={generate} 
+                    className="w-full py-3 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all"
+                >
+                    <RefreshCw size={18}/> Generate New Password
+                </button>
+            </div>
         </div>
     )
 }

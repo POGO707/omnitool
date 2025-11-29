@@ -5,7 +5,7 @@ import {
   Scissors, Search, Video, PenTool, Type, 
   CheckCircle, Globe, QrCode, FileCheck, DollarSign, 
   Percent, GraduationCap, Link as LinkIcon, Sliders, 
-  Maximize2
+  Maximize2, KeyRound
 } from 'lucide-react';
 import { GoogleAd } from '../App';
 
@@ -24,6 +24,7 @@ export default function Dashboard() {
     { title: "PDF Tools", desc: "HTML to PDF", icon: FileText, color: "bg-teal-500", path: "/utils?t=pdf" },
     { title: "Img Compare", desc: "Before/After Slider", icon: Sliders, color: "bg-teal-500", path: "/utils?t=compare" },
     { title: "Img Resizer", desc: "Resize & Compress", icon: Maximize2, color: "bg-teal-500", path: "/utils?t=imgtools" },
+    { title: "Password Gen", desc: "Secure Passwords", icon: KeyRound, color: "bg-teal-500", path: "/utils?t=password" },
 
     // AI Text
     { title: "Smart Search", desc: "Google Grounded AI", icon: Search, color: "bg-indigo-500", path: "/text?t=search" },
